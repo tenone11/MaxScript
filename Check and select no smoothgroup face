@@ -1,0 +1,17 @@
+getsmooth=polyop.getFaceSmoothGroup
+face=polyop.getnumfaces $
+n=#()
+a=#{}
+for i = 1 to face do
+(
+ (
+  smoothface=getsmooth $ i 
+  append n smoothface
+ )
+ if n[i]==0 then
+ ( 
+  append a i
+  subobjectLevel = 4
+  $.EditablePoly.SetSelection #Face a
+ )
+)
