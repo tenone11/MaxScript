@@ -1,6 +1,6 @@
 --create GUI
 try(destroyDialog EGC_Export)catch()
-global TxtValue = "C:\\bake\\low\\"
+global TxtValue = "D:\\bake\\low\\"
 
 rollout EGC_Export "EGC_ExportUI" width:454 height:28
 (
@@ -12,7 +12,7 @@ rollout EGC_Export "EGC_ExportUI" width:454 height:28
 	FbxExporterSetParam "ASCII" False
 	FbxExporterSetParam "SmoothingGroups" True
 	FbxExporterSetParam "TangentSpaceExport" False
-	FbxExporterSetParam "Triangulate" False
+	FbxExporterSetParam "Triangulate" False                
 	FbxExporterSetParam "GeomAsBone" False
 	FbxExporterSetParam "Cameras" False
 	FbxExporterSetParam "EmbedTextures" False
@@ -21,14 +21,19 @@ rollout EGC_Export "EGC_ExportUI" width:454 height:28
 	FbxExporterSetParam "FileVersion" "FBX201300"
 	)
 	--export FBX and create or edit txtfile
-	local EGC_Plug_folder = "C:\\EGC_Plugins"
+	local EGC_Plug_folder = "D:\\EGC_Plugins"
 	local configini = EGC_Plug_folder+"\\EGC_configs.py"
 	local ExportfbxFile = #()
 	fn Export_Exectue yourPath=(
 		if selection[1] == undefined then(
 			messagebox "Please choose an object fisrt"
 		)else(
-			for i in selection do(
+			--have to add noe array, otherwise mesh will combine to export
+			yoursel = #()
+			for x in selection do (append yoursel x)
+			clearSelection()
+			for i in yoursel do(
+				select i
 				exportPath = yourPath + i.name
 				exportfile exportPath #noPrompt selectedOnly:true using:FBXEXP
 				append ExportfbxFile i.name
@@ -63,9 +68,7 @@ rollout EGC_Export "EGC_ExportUI" width:454 height:28
 			ExportConfig()
 			Export_Exectue edt1.text
 			FisrtLine = "MaxToUnreal = True"+"\n"
-			
 			PYfileArray = ""
-			
 			for i=1 to ExportfbxFile.count do(
 				PYfileArray += "r'" + edt1.text + ExportfbxFile[i] + ".FBX', "		
 			)
